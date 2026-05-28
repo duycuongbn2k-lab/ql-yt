@@ -253,7 +253,7 @@ export default function App() {
   const [audits, setAudits] = useState([]);
 
   // --- STATE CHO TỰ ĐỘNG CẬP NHẬT ---
-  const [appVersion, setAppVersion] = useState('1.0.0');
+  const [appVersion, setAppVersion] = useState('1.0.1');
   const [updateStatus, setUpdateStatus] = useState('idle'); // 'idle', 'checking', 'no-update', 'available', 'downloading', 'installing', 'error'
   const [updateInfo, setUpdateInfo] = useState(null); // { version: '1.0.5', url: '...', notes: '...' }
   const [downloadProgress, setDownloadProgress] = useState(0);
