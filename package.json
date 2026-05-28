@@ -51,7 +51,8 @@
     ],
     "win": {
       "target": "nsis",
-      "requestedExecutionLevel": "asInvoker"
+      "requestedExecutionLevel": "asInvoker",
+      "icon": "public/icon.ico"
     },
     "nsis": {
       "oneClick": false,
