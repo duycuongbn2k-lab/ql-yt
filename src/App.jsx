@@ -663,8 +663,18 @@ export default function App() {
     await new Promise(r => setTimeout(r, 1200));
 
     try {
-      // Gọi GitHub API tìm kiếm bản phát hành mới nhất
-      const response = await fetch('https://api.github.com/repos/ytauditpro/ql-yt/releases/latest');
+      // Gọi GitHub API tìm kiếm bản phát hành mới nhất từ repo của bạn
+      const response = await fetch('https://api.github.com/repos/duycuongbn2k-lab/ql-yt/releases/latest');
+      
+      // Nếu trả về 404, tức là bạn chưa tạo bất cứ "Releases" nào trên GitHub
+      if (response.status === 404) {
+        setUpdateStatus('no-update');
+        if (isManual) {
+          alert(`📢 Cấu hình an toàn! Nhưng hiện tại kho lưu trữ GitHub "duycuongbn2k-lab/ql-yt" chưa có bản phát hành (Releases) nào được công bố.\n\nVui lòng sử dụng tính năng "Giả Lập Bản Cập Nhật" để kiểm tra giao diện và tiến trình cập nhật tuyệt đẹp!`);
+        }
+        return;
+      }
+
       if (response.ok) {
         const data = await response.json();
         const latestVer = data.tag_name.replace(/^v/, '');
@@ -715,7 +725,7 @@ export default function App() {
   const handleSimulateUpdate = () => {
     setUpdateInfo({
       version: '1.0.5',
-      url: 'https://github.com/ytauditpro/ql-yt/releases/download/v1.0.5/YT_Audit_Pro_Setup_1.0.5.exe',
+      url: 'https://github.com/duycuongbn2k-lab/ql-yt/releases/download/v1.0.5/YT_Audit_Pro_Setup_1.0.5.exe',
       notes: '• 🔒 Nâng cấp cơ chế bảo mật khóa vân tay 1 thiết bị Single Device Binding cực kỳ an toàn.\n• ⚡ Tối ưu tốc độ tải và phân tích dữ liệu Google Doc / Sheets từ người dùng.\n• 🔔 Cải tiến hệ thống thông báo chuông thời gian thực, nhắc việc định kỳ.\n• 📊 Thiết kế Panel biểu đồ APV & CTR mượt mà, phân tích trung bình và biến động động chu kỳ.'
     });
     setUpdateStatus('available');
