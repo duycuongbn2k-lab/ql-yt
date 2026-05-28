@@ -1733,6 +1733,12 @@ export default function App() {
                   <Users />
                   <span>Quản lý Nhân sự</span>
                 </li>
+              </>
+            )}
+
+            {/* Chỉ Admin mới được quản lý phòng ban & cấu hình hệ thống */}
+            {currentUser.role === 'admin' && (
+              <>
                 <li 
                   className={`nav-item ${activeTab === 'departments' ? 'active' : ''}`}
                   onClick={() => { refreshAllData(); setActiveTab('departments'); }}
@@ -1740,18 +1746,14 @@ export default function App() {
                   <Briefcase />
                   <span>Quản lý Phòng ban</span>
                 </li>
+                <li 
+                  className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`}
+                  onClick={() => { refreshAllData(); setActiveTab('settings'); }}
+                >
+                  <Settings />
+                  <span>Hệ thống</span>
+                </li>
               </>
-            )}
-
-            {/* Chỉ Admin mới được cấu hình hệ thống */}
-            {currentUser.role === 'admin' && (
-              <li 
-                className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`}
-                onClick={() => { refreshAllData(); setActiveTab('settings'); }}
-              >
-                <Settings />
-                <span>Hệ thống</span>
-              </li>
             )}
           </ul>
         </nav>
@@ -4055,7 +4057,7 @@ export default function App() {
         {/* ============================================================== */}
         {/* TAB 10: DEDICATED DEPARTMENT MANAGEMENT PANEL (MỚI) */}
         {/* ============================================================== */}
-        {activeTab === 'departments' && currentUser.role !== 'employee' && (
+        {activeTab === 'departments' && currentUser.role === 'admin' && (
           <div>
             <header className="content-header">
               <div className="header-title">
