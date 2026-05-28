@@ -25,7 +25,8 @@ import {
   Calendar,
   Check,
   Settings,
-  Bell
+  Bell,
+  Briefcase
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 
@@ -1727,6 +1728,13 @@ export default function App() {
                 >
                   <Users />
                   <span>Quản lý Nhân sự</span>
+                </li>
+                <li 
+                  className={`nav-item ${activeTab === 'departments' ? 'active' : ''}`}
+                  onClick={() => { refreshAllData(); setActiveTab('departments'); }}
+                >
+                  <Briefcase />
+                  <span>Quản lý Phòng ban</span>
                 </li>
               </>
             )}
@@ -3661,7 +3669,7 @@ export default function App() {
               </div>
             </header>
 
-            <div style={{ display: 'grid', gridTemplateColumns: currentUser.role === 'admin' ? '2.1fr 1fr' : '1fr', gap: '1.5rem', alignItems: 'start' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem', alignItems: 'start' }}>
               <div className="panel">
                 <div className="table-container">
                   <table className="custom-table" style={{ fontSize: '0.88rem' }}>
@@ -3748,7 +3756,7 @@ export default function App() {
                 </div>
               </div>
 
-              {currentUser.role === 'admin' && (
+              {false && currentUser.role === 'admin' && (
                 <div className="panel" style={{ height: 'fit-content' }}>
                   <h3 style={{ color: '#fff', fontSize: '1rem', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                     <Settings size={18} style={{ color: 'var(--accent)' }} />
@@ -4034,6 +4042,245 @@ export default function App() {
                       </div>
                     )}
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ============================================================== */}
+        {/* TAB 10: DEDICATED DEPARTMENT MANAGEMENT PANEL (MỚI) */}
+        {/* ============================================================== */}
+        {activeTab === 'departments' && currentUser.role !== 'employee' && (
+          <div>
+            <header className="content-header">
+              <div className="header-title">
+                <h1>Quản Lý Phòng Ban Doanh Nghiệp</h1>
+                <p>Quản lý phân ban, phân chia nhóm làm việc và theo dõi hiệu suất nhân sự YouTube</p>
+              </div>
+            </header>
+
+            {/* STATS OVERVIEW CARDS */}
+            <div className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem', marginBottom: '1.5rem' }}>
+              <div className="panel" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
+                <div>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Tổng số phòng ban</span>
+                  <h2 style={{ fontSize: '1.8rem', margin: '0.25rem 0 0 0', color: '#fff', fontWeight: 'bold' }}>{departments.length}</h2>
+                </div>
+                <div style={{ background: 'rgba(0, 229, 255, 0.1)', color: '#00e5ff', padding: '0.65rem', borderRadius: '10px', display: 'flex' }}>
+                  <Briefcase size={22} />
+                </div>
+              </div>
+
+              <div className="panel" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
+                <div>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Tổng số nhân sự hoạt động</span>
+                  <h2 style={{ fontSize: '1.8rem', margin: '0.25rem 0 0 0', color: '#fff', fontWeight: 'bold' }}>{staff.length}</h2>
+                </div>
+                <div style={{ background: 'rgba(0, 255, 102, 0.1)', color: '#00ff66', padding: '0.65rem', borderRadius: '10px', display: 'flex' }}>
+                  <Users size={22} />
+                </div>
+              </div>
+
+              <div className="panel" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
+                <div>
+                  <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Nhân sự trung bình / Phòng</span>
+                  <h2 style={{ fontSize: '1.8rem', margin: '0.25rem 0 0 0', color: '#fff', fontWeight: 'bold' }}>
+                    {departments.length > 0 ? (staff.length / departments.length).toFixed(1) : 0}
+                  </h2>
+                </div>
+                <div style={{ background: 'rgba(255, 193, 7, 0.1)', color: '#ffc107', padding: '0.65rem', borderRadius: '10px', display: 'flex' }}>
+                  <UserCheck size={22} />
+                </div>
+              </div>
+            </div>
+
+            {/* MAIN GRID */}
+            <div style={{ display: 'grid', gridTemplateColumns: currentUser.role === 'admin' ? '1fr 2.2fr' : '1fr', gap: '1.5rem', alignItems: 'start' }}>
+              {/* CỘT TRÁI: THÊM PHÒNG BAN MỚI (CHỈ ADMIN ĐƯỢC THÊM) */}
+              {currentUser.role === 'admin' && (
+                <div className="panel" style={{ height: 'fit-content', border: '1px solid rgba(0, 229, 255, 0.15)', background: 'linear-gradient(145deg, #121f2d, #0d1622)' }}>
+                  <h3 style={{ color: '#fff', fontSize: '1rem', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <Plus size={18} style={{ color: '#00e5ff' }} />
+                    <span>Tạo Phòng Ban Mới</span>
+                  </h3>
+                  <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', lineHeight: '1.5', marginBottom: '1.25rem' }}>
+                    Nhập tên phòng ban mới để phân công và nhóm các kênh và nhân sự lại với nhau.
+                  </p>
+                  
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <input 
+                      type="text" 
+                      className="form-control" 
+                      style={{ padding: '0.5rem', fontSize: '0.85rem' }}
+                      placeholder="Ví dụ: Ban Sáng tạo, Ban Video..." 
+                      id="dedicated-dept-input"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          const val = e.target.value.trim();
+                          if (val) {
+                            if (departments.includes(val)) {
+                              alert('Phòng ban này đã tồn tại!');
+                              return;
+                            }
+                            setDepartments([...departments, val]);
+                            e.target.value = '';
+                          }
+                        }
+                      }}
+                    />
+                    <button 
+                      type="button" 
+                      className="btn btn-primary" 
+                      style={{ padding: '0.5rem 1rem', fontSize: '0.82rem' }}
+                      onClick={() => {
+                        const input = document.getElementById('dedicated-dept-input');
+                        const val = input?.value.trim();
+                        if (val) {
+                          if (departments.includes(val)) {
+                            alert('Phòng ban này đã tồn tại!');
+                            return;
+                          }
+                          setDepartments([...departments, val]);
+                          input.value = '';
+                        }
+                      }}
+                    >
+                      Tạo Mới
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* CỘT PHẢI: GRID PHÒNG BAN CAO CẤP */}
+              <div className="panel">
+                <h3 style={{ color: '#fff', fontSize: '1rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Briefcase size={18} style={{ color: 'var(--accent)' }} />
+                  <span>Danh sách phân ban tổ chức</span>
+                </h3>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '1rem' }}>
+                  {departments.map((dept, index) => {
+                    const deptStaff = staff.filter(s => s.department === dept);
+                    const memberCount = deptStaff.length;
+                    const percentOfTotal = staff.length > 0 ? Math.round((memberCount / staff.length) * 100) : 0;
+                    
+                    return (
+                      <div 
+                        key={index} 
+                        style={{ 
+                          background: 'rgba(255,255,255,0.02)', 
+                          border: '1px solid rgba(255,255,255,0.05)',
+                          borderRadius: '8px', 
+                          padding: '1.25rem',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '0.85rem',
+                          position: 'relative',
+                          overflow: 'hidden',
+                          transition: 'all 0.2s ease-in-out'
+                        }}
+                      >
+                        {/* DEPT CARD HEADER */}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                          <div>
+                            <h4 style={{ color: '#fff', fontSize: '1.05rem', fontWeight: 'bold', margin: 0 }}>{dept}</h4>
+                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{memberCount} nhân viên hoạt động</span>
+                          </div>
+                          
+                          {/* ACTIONS */}
+                          <div style={{ display: 'flex', gap: '0.25rem' }}>
+                            <button 
+                              type="button"
+                              className="btn btn-secondary btn-icon-only" 
+                              style={{ padding: '0.2rem', width: '26px', height: '26px', minWidth: 'auto', background: 'rgba(255,255,255,0.04)', border: 'none' }}
+                              title="Xem thành viên"
+                              onClick={() => setSelectedDeptForMembers(dept)}
+                            >
+                              <Eye size={13} style={{ color: '#00e5ff' }} />
+                            </button>
+                            
+                            {currentUser.role === 'admin' && (
+                              <>
+                                <button 
+                                  type="button"
+                                  className="btn btn-secondary btn-icon-only" 
+                                  style={{ padding: '0.2rem', width: '26px', height: '26px', minWidth: 'auto', background: 'rgba(255,255,255,0.04)', border: 'none' }}
+                                  title="Đổi tên"
+                                  onClick={() => {
+                                    const newName = window.prompt(`Nhập tên mới cho phòng ban "${dept}":`, dept);
+                                    if (newName && newName.trim()) {
+                                      handleRenameDepartment(dept, newName.trim());
+                                    }
+                                  }}
+                                >
+                                  <Edit size={13} style={{ color: '#ffc107' }} />
+                                </button>
+
+                                {departments.length > 1 && (
+                                  <button 
+                                    type="button"
+                                    className="btn btn-danger btn-icon-only" 
+                                    style={{ padding: '0.2rem', width: '26px', height: '26px', minWidth: 'auto' }}
+                                    title="Xóa phòng ban"
+                                    onClick={() => handleDeleteDepartment(dept)}
+                                  >
+                                    <Trash2 size={13} />
+                                  </button>
+                                )}
+                              </>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* STAFF PREVIEWS */}
+                        <div style={{ display: 'flex', gap: '0.35rem', overflow: 'hidden', height: '24px', alignItems: 'center' }}>
+                          {deptStaff.length === 0 ? (
+                            <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>Chưa có nhân sự</span>
+                          ) : (
+                            deptStaff.slice(0, 4).map(st => (
+                              <div 
+                                key={st.id} 
+                                style={{ 
+                                  background: 'linear-gradient(135deg, #00e5ff, #0088ff)', 
+                                  color: '#000', 
+                                  fontSize: '0.7rem', 
+                                  fontWeight: 'bold', 
+                                  padding: '0.15rem 0.4rem', 
+                                  borderRadius: '10px',
+                                  whiteSpace: 'nowrap'
+                                }}
+                                title={st.name}
+                              >
+                                {st.name.split(' ').pop()}
+                              </div>
+                            ))
+                          )}
+                          {memberCount > 4 && (
+                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 'bold' }}>+{memberCount - 4}</span>
+                          )}
+                        </div>
+
+                        {/* PROGRESS BAR RATIO OF TOTAL */}
+                        <div style={{ marginTop: '0.25rem' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.7rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>
+                            <span>Tỉ lệ nhân sự tổng</span>
+                            <span>{percentOfTotal}%</span>
+                          </div>
+                          <div style={{ width: '100%', height: '5px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', overflow: 'hidden' }}>
+                            <div 
+                              style={{ 
+                                width: `${percentOfTotal}%`, 
+                                height: '100%', 
+                                background: 'linear-gradient(90deg, #00e5ff, #0088ff)', 
+                                borderRadius: '3px' 
+                              }} 
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
