@@ -260,6 +260,10 @@ export default function App() {
   const [updateError, setUpdateError] = useState('');
   const [showUpdateModal, setShowUpdateModal] = useState(false);
   
+  // --- STATE CHO ĐỔI TÊN PHÒNG BAN ---
+  const [renamingDept, setRenamingDept] = useState(null);
+  const [renameDeptValue, setRenameDeptValue] = useState('');
+  
   // Lọc danh sách nhân viên theo quyền Trưởng phòng
   const displayedStaff = staff.filter(st => {
     if (currentUser?.role === 'manager') {
@@ -4208,10 +4212,8 @@ export default function App() {
                                   style={{ padding: '0.2rem', width: '26px', height: '26px', minWidth: 'auto', background: 'rgba(255,255,255,0.04)', border: 'none' }}
                                   title="Đổi tên"
                                   onClick={() => {
-                                    const newName = window.prompt(`Nhập tên mới cho phòng ban "${dept}":`, dept);
-                                    if (newName && newName.trim()) {
-                                      handleRenameDepartment(dept, newName.trim());
-                                    }
+                                    setRenamingDept(dept);
+                                    setRenameDeptValue(dept);
                                   }}
                                 >
                                   <Edit size={13} style={{ color: '#ffc107' }} />
@@ -5704,6 +5706,48 @@ export default function App() {
                 </button>
               </div>
             </div>
+          </div>
+        )}
+
+        {/* MODAL ĐỔI TÊN PHÒNG BAN MỚI AN TOÀN CHO ELECTRON */}
+        {renamingDept && (
+          <div className="modal-overlay" style={{ zIndex: 1200, backdropFilter: 'blur(4px)' }}>
+            <form 
+              className="modal-content" 
+              style={{ maxWidth: '400px', border: '1px solid rgba(255, 193, 7, 0.2)', boxShadow: '0 0 25px rgba(255, 193, 7, 0.1)' }}
+              onSubmit={async (e) => {
+                e.preventDefault();
+                const trimmed = renameDeptValue.trim();
+                if (trimmed && trimmed !== renamingDept) {
+                  await handleRenameDepartment(renamingDept, trimmed);
+                }
+                setRenamingDept(null);
+              }}
+            >
+              <div className="modal-header">
+                <h2>Đổi Tên Phòng Ban</h2>
+                <span style={{ cursor: 'pointer' }} onClick={() => setRenamingDept(null)}>✕</span>
+              </div>
+              <div className="modal-body" style={{ paddingTop: '1rem' }}>
+                <div className="form-group">
+                  <label className="form-label" style={{ fontSize: '0.82rem', marginBottom: '0.4rem' }}>Tên cũ: <strong style={{ color: 'var(--accent)' }}>{renamingDept}</strong></label>
+                  <input 
+                    type="text"
+                    className="form-control"
+                    required
+                    value={renameDeptValue}
+                    onChange={(e) => setRenameDeptValue(e.target.value)}
+                    placeholder="Nhập tên phòng ban mới..."
+                    style={{ padding: '0.5rem' }}
+                    autoFocus
+                  />
+                </div>
+              </div>
+              <div className="modal-footer" style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                <button type="button" className="btn btn-secondary" onClick={() => setRenamingDept(null)}>Hủy</button>
+                <button type="submit" className="btn btn-primary" style={{ background: '#ffc107', color: '#000', border: 'none', fontWeight: 'bold' }}>Cập nhật</button>
+              </div>
+            </form>
           </div>
         )}
       </main>
